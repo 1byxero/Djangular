@@ -58,6 +58,7 @@ def signin(request):
 			data = json.dumps(response)
 	return HttpResponse(data,content_type= "application/json")
 
+
 def signout(request):
 	if request.user.is_authenticated():
 		logout(request)
