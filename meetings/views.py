@@ -1,19 +1,24 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from .models import Meeting
+from django.core import serializers
+import json
 # Create your views here.
 
 def index(request):
-	return HttpResponse("Hello")
+	response = "Hello"
+	data = json.dumps(response)
+	return HttpResponse(data, content_type = "application/json")
 
 def signup(request):
 	username = request.GET.get("username")
 	password = request.GET.get("password")
 	if username is None or password is None:
-		return HttpResponse("Username or password missing")
+		response = "Username or password missing"
+		data = json.dumps(response)
 	else: 
 		mail = request.GET.get("mail")
 		firstname = request.GET.get("firstname")
@@ -33,20 +38,35 @@ def signup(request):
 				user.email = mail
 			user.save()
 			status = "User with username "+username+" saved successfully"	
-		return HttpResponse(status)
+		data = json.dumps(status)
+	return HttpResponse(data, content_type = "application/json")
 
 def signin(request):
 	username = request.GET.get("username")
 	password = request.GET.get("password")
 	if username is None or password is None:
-		return HttpResponse("Username or password missing")
+		response = "Username or password missing"
+		data = json.dumps(response)
 	else:
 		user = authenticate(username=username, password=password)
 		if user is None:
-			return HttpResponse("wrong username or password")
+			response = "wrong username or password"
+			data = json.dumps(response)
 		else:
 			login(request, user)
-			return HttpResponse("Logged in successfully")
+			response = "Logged in successfully"
+			data = json.dumps(response)
+	return HttpResponse(data,content_type= "application/json")
+
+def signout(request):
+	if request.user.is_authenticated():
+		logout(request)
+		response = "Successfully logged out"
+		data = json.dumps(response)
+	else:
+		response = "No loggedin user"
+		data = json.dumps(response)
+	return HttpResponse(data, content_type = "application/json")
 
 def addmeeting(request):
 	if request.user.is_authenticated():
@@ -56,24 +76,24 @@ def addmeeting(request):
 		location = request.GET.get("location")
 		meetingfor = request.GET.get("meetingfor")
 		if meetdate is None or meetdate is None or meetdate is None or meetdate is None:
-			return HttpResponse("One or more fields missing")
+			response = "One or more fields missing"
+			data = json.dumps(response)
 		else:
 			meetinginst = Meeting(meetdate=meetdate, meettime=meettime, location=location, meetingfor=meetingfor)
 			meetinginst.save()
-			return HttpResponse("Meeting successfully created")
+			response = "Meeting successfully created"
+			data = json.dumps(response)
 	else:
-		return HttpResponse("Signin to create new meeting")
+		response = "Signin to create new meeting"
+		data = json.dumps(response)
+	return HttpResponse(data, content_type = "application/json")
+
 
 def viewmeeting(request):
 	if request.user.is_authenticated():
 		all_meetings = Meeting.objects.all()
-		num = 1
-		output = "<table><tr><th>ID</th><th>Date</th><th>Time</th><th>Location</th><th>Meeting for</th><tr>"
-		for i in all_meetings:
-			temp = "<tr><td>"+str(num) +"</td><td>"+ str(i.meetdate) +"</td><td>"+ str(i.meettime) +"</td><td>"+ str(i.location) +"</td><td>"+ str(i.meetingfor) + "</td></tr>"
-			output+= temp
-			num+=1
-		output+="</table>"
-		return HttpResponse(output)
+		data = serializers.serialize("json", all_meetings)
 	else:
-		return HttpResponse("Signin to view meeting")	
+		response = "Signin to view meeting"
+		data = json.dumps(response)
+	return HttpResponse(data, content_type = "application/json")
