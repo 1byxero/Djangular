@@ -106,8 +106,14 @@ def viewmeetingsfromcouchbase(request):
 		host = "http://localhost:4984/"
 		db = "meetinggw/"
 		filter = "_changes?filter=sync_gateway/bychannel&channels="
-		query = request.user.username
-		url = host+db+filter+str(query)
+		query = str(request.user.username)
+
+		sequence = request.GET.get("last_seq")
+		if sequence is not None:
+			last_seq = "&since="+str(sequence)
+			url = host+db+filter+query+last_seq
+		else:
+			url = host+db+filter+str(query)
 		r = requests.get(url)
 		#fetchdata
 		if r.status_code == 200:
@@ -160,4 +166,4 @@ def addmeetingtocouchbase(request):
 	else:
 		response = "Signin to create new meeting"
 		data = json.dumps(response)
-	return HttpResponse(data, content_type = "application/json")
+	return HttpResponse(data, content_type = "application/json")		
