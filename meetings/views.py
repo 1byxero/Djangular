@@ -110,14 +110,29 @@ def viewmeetingsfromcouchbase(request):
 
 		sequence = request.GET.get("last_seq")
 		if sequence is not None:
-			last_seq = "&since="+str(sequence)
-			url = host+db+filter+query+last_seq
+			current_last_seq = "&since="+str(sequence)
+			url = host+db+filter+query+current_last_seq
 		else:
 			url = host+db+filter+str(query)
 		r = requests.get(url)
 		#fetchdata
 		if r.status_code == 200:
-			return HttpResponse(r, content_type = "application/json")
+			#print json.JSONDecoder().decode(r.text)
+			raw_json = json.loads(r.text)
+			documents = []
+			docsmetadata = raw_json["results"]
+			next_last_sequence = raw_json["last_seq"] #use this later for sync
+			for i in docsmetadata:
+				if i["id"] != "_user/GUEST":
+					fetchid = i["id"]
+					fetchhost = "http://localhost:4984/"
+					fetchdb = "meetinggw/"
+					fetchurl = fetchhost+fetchdb+str(fetchid)
+					fetchret =requests.get(fetchurl)
+					if fetchret.status_code == 200:
+						documents.append(json.loads(fetchret.text))
+			data = json.dumps(documents)
+			return HttpResponse(data, content_type = "application/json")
 		else:
 			r = json.dumps("Error fetching data")
 			return HttpResponse(r, content_type = "application/json")
