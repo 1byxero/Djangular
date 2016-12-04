@@ -101,27 +101,26 @@ def viewmeeting(request):
 
 def viewmeetingsfromcouchbase(request):
 	if request.user.is_authenticated():
-		#make request
-
+		#make request to get metadata
 		host = "http://localhost:4984/"
 		db = "meetinggw/"
 		filter = "_changes?filter=sync_gateway/bychannel&channels="
 		query = str(request.user.username)
-
-		sequence = request.GET.get("last_seq")
-		if sequence is not None:
-			current_last_seq = "&since="+str(sequence)
-			url = host+db+filter+query+current_last_seq
-		else:
-			url = host+db+filter+str(query)
+		url = host+db+filter+str(query)
 		r = requests.get(url)
 		#fetchdata
 		if r.status_code == 200:
-			#print json.JSONDecoder().decode(r.text)
-			raw_json = json.loads(r.text)
+			raw_json = r.json()#json.loads(r.text)
 			documents = []
 			docsmetadata = raw_json["results"]
-			next_last_sequence = raw_json["last_seq"] #use this later for sync
+			requesteddocs = []
+			for i in docsmetadata:
+				if i["id"] != "_user/GUEST":
+					tempid = {"id": i["id"]}
+					requesteddocs.append(tempid)
+
+			#this is inefficient method 
+			
 			for i in docsmetadata:
 				if i["id"] != "_user/GUEST":
 					fetchid = i["id"]
@@ -130,12 +129,43 @@ def viewmeetingsfromcouchbase(request):
 					fetchurl = fetchhost+fetchdb+str(fetchid)
 					fetchret =requests.get(fetchurl)
 					if fetchret.status_code == 200:
-						documents.append(json.loads(fetchret.text))
-			data = json.dumps(documents)
-			return HttpResponse(data, content_type = "application/json")
+						print fetchret.json()
+						# tempdoc = {'doc': fetchret.json()}
+						# documents.append(json.loads(fetchret.text))
+						# documents.append(tempdoc)
+						documents.append(fetchret.json())
+			#trying efficient method here
+			# requestdata = {"docs": requesteddocs}
+			# fetchrequrl = host+db+'_bulk_get'
+			# headers = {'content-type': 'application/json'}
+			# fetchreq = requests.post(fetchrequrl, data=json.dumps(requestdata), headers=headers)
+			
+			# if fetchreq.status_code == 200:
+			# 	split_data = fetchreq.text.split("Content-Type: application/json")
+			# 	for i in split_data:
+			# 		split_at_hypen = i.split("--")
+			# 		tempdoc = {"doc": split_at_hypen[0].strip()}					
+			# 		documents.append(tempdoc)
+			# 	next_last_sequence = raw_json["last_seq"] # for sync purpose
+			# 	# data = json.dumps(documents) this not needed here as documents are already json encoded
+				
+			# 	documentsdict = {}
+			# 	documentsdict['documents'] = documents
+			# 	last_seqdict = {}
+			# 	last_seqdict['last_seq'] = next_last_sequence
+			# 	datadump = [documentsdict, last_seqdict] 
+			# 	data = datadump
+			
+			docsdump = json.dumps(documents)
+			next_last_sequence = raw_json["last_seq"] # for sync purpose
+ 			
+			data = json.dumps({
+				"last_seq": next_last_sequence,
+				"documents": documents
+			})
+
 		else:
-			r = json.dumps("Error fetching data")
-			return HttpResponse(r, content_type = "application/json")
+			data = json.dumps("Error fetching data")
 	else:
 		response = "Signin to view meeting"
 		data = json.dumps(response)
@@ -181,4 +211,14 @@ def addmeetingtocouchbase(request):
 	else:
 		response = "Signin to create new meeting"
 		data = json.dumps(response)
-	return HttpResponse(data, content_type = "application/json")		
+	return HttpResponse(data, content_type = "application/json")
+
+def fetchlatest(request):
+	sequence = request.GET.get("last_seq")
+	if sequence is not None:
+		current_last_seq = "&since="+str(sequence)
+		url = host+db+filter+query+current_last_seq
+	response = "will update this to fetch latest docs using sequence number"
+	data = json.dumps(response)
+	return HttpResponse(data, content_type = "application/json")
+
