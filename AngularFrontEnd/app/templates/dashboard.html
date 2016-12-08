@@ -1,0 +1,37 @@
+<head>
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</head>
+
+  <body>
+   <div class="container">
+      <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Sequence</th>
+                  <th>Id</th>
+                </tr>
+              </thead>
+              <tbody> 
+                <tr *ngFor= "let item of meetingsObject.results">
+                  <td *ngIf="item.seq!=1">{{item.seq}}</td>
+                  <td *ngIf="item.seq!=1">{{item.id}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {{meetingsObject.res}}
+          </div>
+      
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+</body>
