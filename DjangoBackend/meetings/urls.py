@@ -10,5 +10,7 @@ urlpatterns = [
 	url(r'^addmeeting', views.addmeeting, name='addmeeting'),
 	url(r'^viewmeeting', views.viewmeeting, name='viewmeeting'),
 	url(r'^view', views.viewmeetingsfromcouchbase, name='view'),
-	url(r'^add', views.addmeetingtocouchbase, name='add')
+	url(r'^add', views.addmeetingtocouchbase, name='add'),
+	url(r'^checksignin', views.checksignin, name='checksignin')
+	
 ]

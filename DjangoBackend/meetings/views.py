@@ -69,6 +69,16 @@ def signout(request):
 		data = json.dumps(response)
 	return HttpResponse(data, content_type = "application/json")
 
+def checksignin(request):
+	if request.user.is_authenticated():
+		print type(request.user)
+		response = True
+		data = json.dumps(response)
+	else:
+		response = False
+		data = json.dumps(response)
+	return HttpResponse(data, content_type = "application/json")
+
 def addmeeting(request):
 	if request.user.is_authenticated():
 		# createdon = models.DateField(auto_now_add=True)
