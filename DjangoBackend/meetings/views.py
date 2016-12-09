@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from .models import Meeting
 from django.core import serializers
 import json, requests
 # Create your views here.
@@ -76,36 +75,6 @@ def checksignin(request):
 		data = json.dumps(response)
 	else:
 		response = False
-		data = json.dumps(response)
-	return HttpResponse(data, content_type = "application/json")
-
-def addmeeting(request):
-	if request.user.is_authenticated():
-		# createdon = models.DateField(auto_now_add=True)
-		meetdate = request.GET.get("meetdate")
-		meettime = request.GET.get("meettime")
-		location = request.GET.get("location")
-		meetingfor = request.GET.get("meetingfor")
-		if meetdate is None or meettime is None or location is None or meetingfor is None:
-			response = "One or more fields missing"
-			data = json.dumps(response)
-		else:
-			meetinginst = Meeting(meetdate=meetdate, meettime=meettime, location=location, meetingfor=meetingfor)
-			meetinginst.save()
-			response = "Meeting successfully created"
-			data = json.dumps(response)
-	else:
-		response = "Signin to create new meeting"
-		data = json.dumps(response)
-	return HttpResponse(data, content_type = "application/json")
-
-
-def viewmeeting(request):
-	if request.user.is_authenticated():
-		all_meetings = Meeting.objects.all()
-		data = serializers.serialize("json", all_meetings)
-	else:
-		response = "Signin to view meeting"
 		data = json.dumps(response)
 	return HttpResponse(data, content_type = "application/json")
 
@@ -231,4 +200,3 @@ def fetchlatest(request):
 	response = "will update this to fetch latest docs using sequence number"
 	data = json.dumps(response)
 	return HttpResponse(data, content_type = "application/json")
-
