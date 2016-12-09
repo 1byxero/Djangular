@@ -9,16 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var checksignin_service_1 = require('../services/checksignin.service');
 var SignupComponent = (function () {
-    function SignupComponent() {
+    function SignupComponent(signinservice) {
+        this.signinservice = signinservice;
+        this.user = {};
     }
+    SignupComponent.prototype.OnSignUpClick = function () {
+        this.signinservice.Signup(this.user.name, this.user.username, this.user.email, this.user.password)
+            .then(function (data) { return console.log(data); })
+            .catch(function (error) { return console.log(error); });
+    };
     SignupComponent = __decorate([
         core_1.Component({
             selector: 'sign-up',
             templateUrl: 'app/templates/signup.html',
             styleUrls: ['app/styles/signin.css', "app/styles/bootstrap.min.css"]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [checksignin_service_1.SignInService])
     ], SignupComponent);
     return SignupComponent;
 }());

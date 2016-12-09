@@ -12,6 +12,7 @@
     map: {
       // our app is within the app folder
       app: 'app',
+      "ng2-cookies": 'node_modules/ng2-cookies',
 
       // angular bundles
       '@angular/core': 'npm:@angular/core/bundles/core.umd.js',
@@ -35,7 +36,8 @@
       },
       rxjs: {
         defaultExtension: 'js'
-      }
+      },
+      'ng2-cookies':{defaultExtension: 'js' }
     }
   });
 })(this);

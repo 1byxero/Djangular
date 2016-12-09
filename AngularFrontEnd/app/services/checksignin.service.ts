@@ -3,31 +3,37 @@ import { Headers, Http } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 
-
 @Injectable()
 export class SignInService {
 
-	private checksigninurl = 'http://localhost:8000/meetings/checksignin';
+	
+	private signupurl = 'http://localhost:8000/meetings/apisignup';
 	constructor(private http: Http) {}
 
-	checkSignin(): Promise<any> {
+
+	Signup(username: string, password: string, name: string, email:string): Promise<any> {
+	var body = 'username='+username+'&password='+password+'name='+name+'mail='+email;
+	var headers = new Headers();
+	headers.append('Content-Type', 'application/x-www-form-urlencoded');
 		return this.http
-		.get(this.checksigninurl)
+		.post(this.signupurl, body, { headers: headers})
 		.toPromise()
 		.then(response => response.json())
-		.catch(this.handleError);
+		.catch(this.handleError);		
 	}
 
-	private signinurl = 'http://localhost:8000/meetings/signin';
+	private signinurl = 'http://localhost:8000/meetings/apisignin';
 	
 	Signin(username: string, password: string): Promise<any> {
+	var body = 'username='+username+'&password='+password;
+	var headers = new Headers();
+	headers.append('Content-Type', 'application/x-www-form-urlencoded');
 		return this.http
-		.get(this.signinurl)
+		.post(this.signinurl, body, { headers: headers})
 		.toPromise()
 		.then(response => response.json())
 		.catch(this.handleError);
 	}
-
 
 
 	private handleError(error: any): Promise<any> {

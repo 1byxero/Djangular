@@ -14,19 +14,25 @@ require('rxjs/add/operator/toPromise');
 var SignInService = (function () {
     function SignInService(http) {
         this.http = http;
-        this.checksigninurl = 'http://localhost:8000/meetings/checksignin';
-        this.signinurl = 'http://localhost:8000/meetings/signin';
+        this.signupurl = 'http://localhost:8000/meetings/apisignup';
+        this.signinurl = 'http://localhost:8000/meetings/apisignin';
     }
-    SignInService.prototype.checkSignin = function () {
+    SignInService.prototype.Signup = function (username, password, name, email) {
+        var body = 'username=' + username + '&password=' + password + 'name=' + name + 'mail=' + email;
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
         return this.http
-            .get(this.checksigninurl)
+            .post(this.signupurl, body, { headers: headers })
             .toPromise()
             .then(function (response) { return response.json(); })
             .catch(this.handleError);
     };
     SignInService.prototype.Signin = function (username, password) {
+        var body = 'username=' + username + '&password=' + password;
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
         return this.http
-            .get(this.signinurl)
+            .post(this.signinurl, body, { headers: headers })
             .toPromise()
             .then(function (response) { return response.json(); })
             .catch(this.handleError);

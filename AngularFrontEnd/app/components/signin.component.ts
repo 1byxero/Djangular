@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-
 import { SignInService } from '../services/checksignin.service';
-
+import { Cookie } from 'ng2-cookies/ng2-cookies';
 
 @Component({
   selector: 'sign-in',
@@ -11,13 +10,17 @@ import { SignInService } from '../services/checksignin.service';
 export class SigninComponent  { 
 
 	user: any = {};
+	signinresponse: any ;
 
 	constructor(private signinservice: SignInService) { }
 
 	onSigninSubmit() {
 			this.signinservice.Signin(this.user.username, this.user.password)
-			.then(data => console.log(data))
+			.then(data => this.log(this.signinresponse = data))
             .catch(error => console.log(error));
-            //unsafe password should be hashed
 		}
+
+	log(data: any){
+		console.log(data);
+	}
 }

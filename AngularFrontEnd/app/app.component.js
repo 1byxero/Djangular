@@ -9,18 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var checksignin_service_1 = require('./services/checksignin.service');
+var ng2_cookies_1 = require('ng2-cookies/ng2-cookies');
 var AppComponent = (function () {
-    //write method to check if loggedin onInit
-    function AppComponent(checksigninservice) {
-        this.checksigninservice = checksigninservice;
+    function AppComponent() {
         this.isLoggedIn = false;
     }
+    //write method to check if loggedin onInit
     AppComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.checksigninservice.checkSignin()
-            .then(function (data) { return _this.isLoggedIn = data; })
-            .catch(function (error) { return console.log(error); });
+        var checklogincookie = ng2_cookies_1.Cookie.get('SignedIn');
+        if (checklogincookie === 'true') {
+            this.isLoggedIn = (checklogincookie === 'true');
+        }
     };
     AppComponent = __decorate([
         core_1.Component({
@@ -28,7 +27,7 @@ var AppComponent = (function () {
             template: "\n  <div class=\"container\">\n    <div class=\"header clearfix\">\n        <nav>\n          <ul class=\"nav nav-pills pull-right\">\n            <li role=\"presentation\"><a routerLink=\"/home\" routerLinkActive=\"active\">Home</a></li>\n            <li role=\"presentation\" *ngIf=\"isLoggedIn\"><a routerLink=\"/dashboard\" routerLinkActive=\"active\">Dashboard</a></li>\n            <li role=\"presentation\"  *ngIf=\"!isLoggedIn\"><a routerLink=\"/signup\" routerLinkActive=\"active\">Signup</a></li>\n            <li role=\"presentation\"  *ngIf=\"!isLoggedIn\"><a routerLink=\"/signin\" routerLinkActive=\"active\">Sign In</a></li>\n          </ul>\n        </nav>\n        <h3 class=\"text-muted\">Sync-Meetings</h3>\n      </div>\n    <div class=\"container\">\n\t<router-outlet></router-outlet>\n  ",
             styleUrls: ['app/styles/bootstrap.min.css']
         }), 
-        __metadata('design:paramtypes', [checksignin_service_1.SignInService])
+        __metadata('design:paramtypes', [])
     ], AppComponent);
     return AppComponent;
 }());

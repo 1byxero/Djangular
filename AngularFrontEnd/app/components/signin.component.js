@@ -16,10 +16,13 @@ var SigninComponent = (function () {
         this.user = {};
     }
     SigninComponent.prototype.onSigninSubmit = function () {
+        var _this = this;
         this.signinservice.Signin(this.user.username, this.user.password)
-            .then(function (data) { return console.log(data); })
+            .then(function (data) { return _this.log(_this.signinresponse = data); })
             .catch(function (error) { return console.log(error); });
-        //unsafe password should be hashed
+    };
+    SigninComponent.prototype.log = function (data) {
+        console.log(data);
     };
     SigninComponent = __decorate([
         core_1.Component({

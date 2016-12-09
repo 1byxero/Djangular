@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router }	from '@angular/router';
+import { Cookie } from 'ng2-cookies/ng2-cookies';
+
 
 import { SignInService } from './services/checksignin.service';
 
@@ -25,17 +27,17 @@ import { SignInService } from './services/checksignin.service';
   styleUrls: ['app/styles/bootstrap.min.css']
 })
 
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 	
+
+
 	public isLoggedIn: boolean = false;
 
 	//write method to check if loggedin onInit
-
-	constructor(private checksigninservice: SignInService) { }
-
-	ngOnInit() {
-    	this.checksigninservice.checkSignin()
-            .then(data => this.isLoggedIn = data)
-            .catch(error => console.log(error));
+  ngOnInit(): void {
+    let checklogincookie = Cookie.get('SignedIn')
+    if(checklogincookie==='true'){
+      this.isLoggedIn = (checklogincookie === 'true');
     }
+  }
 }
