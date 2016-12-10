@@ -20,6 +20,8 @@ var home_component_1 = require('./components/home.component');
 var app_routes_module_1 = require('./app-routes.module');
 var fetchuserdata_service_1 = require('./services/fetchuserdata.service');
 var checksignin_service_1 = require('./services/checksignin.service');
+var addmeeting_component_1 = require('./components/addmeeting.component');
+var logout_component_1 = require('./components/logout.component');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -36,7 +38,9 @@ var AppModule = (function () {
                 dashboard_component_1.DashboardComponent,
                 signup_component_1.SignupComponent,
                 signin_component_1.SigninComponent,
-                home_component_1.HomeComponent
+                home_component_1.HomeComponent,
+                addmeeting_component_1.AddMeetingComponent,
+                logout_component_1.SignOutComponent
             ],
             bootstrap: [app_component_1.AppComponent],
             providers: [

@@ -16,6 +16,7 @@ var SignInService = (function () {
         this.http = http;
         this.signupurl = 'http://localhost:8000/meetings/apisignup';
         this.signinurl = 'http://localhost:8000/meetings/apisignin';
+        this.signouturl = 'http://localhost:8000/meetings/apisignout';
     }
     SignInService.prototype.Signup = function (username, password, name, email) {
         var body = 'username=' + username + '&password=' + password + 'name=' + name + 'mail=' + email;
@@ -33,6 +34,16 @@ var SignInService = (function () {
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
         return this.http
             .post(this.signinurl, body, { headers: headers })
+            .toPromise()
+            .then(function (response) { return response.json(); })
+            .catch(this.handleError);
+    };
+    SignInService.prototype.Signout = function (username, token) {
+        var body = 'username=' + username + '&token=' + token;
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        return this.http
+            .post(this.signouturl, body, { headers: headers })
             .toPromise()
             .then(function (response) { return response.json(); })
             .catch(this.handleError);

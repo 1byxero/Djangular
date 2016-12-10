@@ -1,0 +1,28 @@
+  <head>
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin" #f="ngForm" (ngSubmit)="onAddclicked()">
+        <h2 class="form-signin-heading">Add meeting</h2>
+        <label for="inputMeetdate" class="sr-only">Meetdate</label>
+        <input type="text" id="inputMeetdate" class="form-control" placeholder="Meet date" required autofocus name="inputMeetdate" [(ngModel)]=addmeetingdata.meetdate>
+        <label for="inputMeetTime" class="sr-only">Meettime</label>
+        <input type="text" id="inputMeetTime" class="form-control" placeholder="Meet time" required name="inputMeetTime" [(ngModel)]=addmeetingdata.meettime>
+        <label for="inputLocation" class="sr-only">Location</label>
+        <input type="text" id="inputLocation" class="form-control" placeholder="Location" required name="inputLocation" [(ngModel)]=addmeetingdata.meetilocation>
+        <label for="inputAgenda" class="sr-only">Agenda</label>
+        <input type="Agenda" id="inputAgenda" class="form-control" placeholder="Agenda" required name="inputAgenda" [(ngModel)]=addmeetingdata.agenda>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Add</button>
+      </form>   
+
+    </div> <!-- /container -->
+
+
+  </body>

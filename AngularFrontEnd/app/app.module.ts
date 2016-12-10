@@ -15,6 +15,8 @@ import { HomeComponent }	from './components/home.component';
 import { routing }	from './app-routes.module';
 import { FetchmeetingsService } from './services/fetchuserdata.service';
 import { SignInService } from './services/checksignin.service';
+import { AddMeetingComponent } from './components/addmeeting.component';
+import { SignOutComponent } from './components/logout.component';
 
 
 @NgModule({
@@ -29,7 +31,9 @@ import { SignInService } from './services/checksignin.service';
   	DashboardComponent,
   	SignupComponent,
     SigninComponent,
-  	HomeComponent
+  	HomeComponent,
+    AddMeetingComponent,
+    SignOutComponent
   	],
   bootstrap:    [ AppComponent ],
   providers: [ 

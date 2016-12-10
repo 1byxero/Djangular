@@ -35,6 +35,20 @@ export class SignInService {
 		.catch(this.handleError);
 	}
 
+	private signouturl = 'http://localhost:8000/meetings/apisignout';
+	
+
+	Signout(username: string, token:string): Promise<any> {
+	var body = 'username='+username+'&token='+token;
+	var headers = new Headers();
+	headers.append('Content-Type', 'application/x-www-form-urlencoded');
+		return this.http
+		.post(this.signouturl, body, { headers: headers})
+		.toPromise()
+		.then(response => response.json())
+		.catch(this.handleError);
+	}
+
 
 	private handleError(error: any): Promise<any> {
 	 console.error('An error Occured', error);

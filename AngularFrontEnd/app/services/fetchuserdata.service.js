@@ -12,17 +12,28 @@ var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 require('rxjs/add/operator/toPromise');
 var FetchmeetingsService = (function () {
-    //add parameters later
     function FetchmeetingsService(http) {
         this.http = http;
-        //	host = "http://localhost:4984/"
-        //	db = "meetinggw/"
-        //	filter = "_changes?filter=sync_gateway/bychannel&channels="
-        this.fetchmeetingsurl = 'http://localhost:4984/meetinggw/_changes?filter=sync_gateway/bychannel&channels=bawaji94';
+        this.fetchmeetingsurl = "http://127.0.0.1:8000/meetings/apiviewmeetings";
+        this.addmeetingsurl = "http://127.0.0.1:8000/meetings/apiaddmeet";
     }
-    FetchmeetingsService.prototype.getMeetings = function () {
+    FetchmeetingsService.prototype.getMeetings = function (username, token) {
+        var body = 'username=' + username + '&token=' + token;
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
         return this.http
-            .get(this.fetchmeetingsurl)
+            .post(this.fetchmeetingsurl, body, { headers: headers })
+            .toPromise()
+            .then(function (response) { return response.json(); })
+            .catch(this.handleError);
+    };
+    FetchmeetingsService.prototype.addMeeting = function (username, token, meetdate, meettime, location, agenda) {
+        var body = 'username=' + username + '&token=' + token + '&meetdate=' + meetdate;
+        body = body + '&meettime=' + meettime + '&location=' + location + '&agenda=' + agenda;
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        return this.http
+            .post(this.addmeetingsurl, body, { headers: headers })
             .toPromise()
             .then(function (response) { return response.json(); })
             .catch(this.handleError);

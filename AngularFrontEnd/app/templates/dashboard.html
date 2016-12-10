@@ -8,22 +8,31 @@
   <body>
    <div class="container">
       <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped" *ngIf="meetingsObject">
               <thead>
                 <tr>
-                  <th>Sequence</th>
-                  <th>Id</th>
+                  <th>Sr.No</th>
+                  <th>Meet Date</th>
+                  <th>Meet Time</th>
+                  <th>Meet Location</th>
+                  <th>Meet Agenda</th>
                 </tr>
               </thead>
               <tbody> 
-                <tr *ngFor= "let item of meetingsObject.results">
-                  <td *ngIf="item.seq!=1">{{item.seq}}</td>
-                  <td *ngIf="item.seq!=1">{{item.id}}</td>
+                <tr *ngFor= "let item of meetingsObject; let i = index">
+                  <td>{{i+1}}</td>
+                  <td>{{item.meetdate}}</td>
+                  <td>{{item.meettime}}</td>
+                  <td>{{item.location}}</td>
+                  <td>{{item.meetingfor}}</td>
                 </tr>
               </tbody>
             </table>
+            <div *ngIf="meetingsObject == null">
+              <h1>No Meetings to show</h1>
+            </div>
 
-            {{meetingsObject.res}}
+            <!-- {{meetingsObject.res}} -->
           </div>
       
     </div> <!-- /container -->

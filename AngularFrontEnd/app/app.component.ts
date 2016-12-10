@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router }	from '@angular/router';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 
-
 import { SignInService } from './services/checksignin.service';
 
 
@@ -14,7 +13,10 @@ import { SignInService } from './services/checksignin.service';
         <nav>
           <ul class="nav nav-pills pull-right">
             <li role="presentation"><a routerLink="/home" routerLinkActive="active">Home</a></li>
-            <li role="presentation" *ngIf="isLoggedIn"><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+            <li role="presentation" *ngIf="isLoggedIn"><a routerLink="/addmeeting" routerLinkActive="active">Add Meetings</a></li>
+            <li role="presentation" *ngIf="isLoggedIn"><a routerLink="/dashboard" routerLinkActive="active">Show Meetings</a></li>
+            <li role="presentation" *ngIf="isLoggedIn"><a routerLink="/logout" routerLinkActive="active">Log out</a></li>
+
             <li role="presentation"  *ngIf="!isLoggedIn"><a routerLink="/signup" routerLinkActive="active">Signup</a></li>
             <li role="presentation"  *ngIf="!isLoggedIn"><a routerLink="/signin" routerLinkActive="active">Sign In</a></li>
           </ul>
@@ -29,8 +31,6 @@ import { SignInService } from './services/checksignin.service';
 
 export class AppComponent implements OnInit {
 	
-
-
 	public isLoggedIn: boolean = false;
 
 	//write method to check if loggedin onInit

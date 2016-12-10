@@ -12,44 +12,44 @@ var core_1 = require('@angular/core');
 var checksignin_service_1 = require('../services/checksignin.service');
 var ng2_cookies_1 = require('ng2-cookies/ng2-cookies');
 var router_1 = require('@angular/router');
-var SigninComponent = (function () {
-    function SigninComponent(signinservice, router) {
+var SignOutComponent = (function () {
+    function SignOutComponent(signinservice, router) {
         this.signinservice = signinservice;
         this.router = router;
         this.user = {};
     }
-    SigninComponent.prototype.ngOnInit = function () {
+    SignOutComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.isSignedin = ng2_cookies_1.Cookie.get('SignedIn');
         if (this.isSignedin) {
+            this.username = ng2_cookies_1.Cookie.get('username');
+            this.token = ng2_cookies_1.Cookie.get('token');
+            this.signinservice.Signout(this.username, this.token)
+                .then(function (data) { return _this.destroysession(data); })
+                .catch(function (error) { return console.log(error); });
+        }
+        else {
             this.router.navigate(['/home']);
         }
     };
-    SigninComponent.prototype.onSigninSubmit = function () {
-        var _this = this;
-        this.signinservice.Signin(this.user.username, this.user.password)
-            .then(function (data) { return _this.logincreatesession(data); })
-            .catch(function (error) { return console.log(error); });
-    };
-    SigninComponent.prototype.logincreatesession = function (requestresponse) {
-        if (requestresponse.msg == 'User Authenticated') {
-            ng2_cookies_1.Cookie.set('SignedIn', 'true');
-            ng2_cookies_1.Cookie.set('username', this.user.username);
-            ng2_cookies_1.Cookie.set('token', requestresponse.token);
+    SignOutComponent.prototype.destroysession = function (requestresponse) {
+        if (requestresponse == 'Signed out') {
+            ng2_cookies_1.Cookie.deleteAll();
             location.reload();
         }
         else {
             alert(requestresponse);
         }
     };
-    SigninComponent = __decorate([
+    SignOutComponent = __decorate([
         core_1.Component({
-            selector: 'sign-in',
-            templateUrl: 'app/templates/signin.html',
-            styleUrls: ['app/styles/signin.css', "app/styles/bootstrap.min.css"]
+            selector: 'sign-out',
+            templateUrl: 'app/templates/signout.html',
+            styleUrls: ['app/styles/signin.css', 'app/styles/bootstrap.min.css', 'app/styles/jumbotron.css']
         }), 
         __metadata('design:paramtypes', [checksignin_service_1.SignInService, router_1.Router])
-    ], SigninComponent);
-    return SigninComponent;
+    ], SignOutComponent);
+    return SignOutComponent;
 }());
-exports.SigninComponent = SigninComponent;
-//# sourceMappingURL=signin.component.js.map
+exports.SignOutComponent = SignOutComponent;
+//# sourceMappingURL=logout.component.js.map

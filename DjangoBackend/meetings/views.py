@@ -41,7 +41,7 @@ def apisignup(request):
 				if mail is not None:
 					user.email = mail
 				user.save()
-				status = "User with username "+username+" created successfully"	
+				status = "User created successfully"	
 			data = json.dumps(status)
 	else:
 		data = "Invalid request method"
@@ -82,10 +82,14 @@ def apisignout(request):
 			response = "Invalid request" 
 			data = json.dumps(response)
 		else:
-			tokeninst = Token.objects.get(token=token)
-			tokeninst.delete()
-			response = "Signed out"
-			data = json.dumps(response)
+			try:
+				tokeninst = Token.objects.get(token=token)
+				tokeninst.delete()
+				response = "Signed out"
+				data = json.dumps(response)
+			except Token.DoesNotExist:
+				response = "Session does not exist"
+				data = json.dumps(response)
 	else:
 		response = "Invalid request method" 
 		data = json.dumps(response)
@@ -109,7 +113,7 @@ def apiaddmeet(request):
 	   				meetdate = request.POST.get("meetdate")
 					meettime = request.POST.get("meettime")
 					location = request.POST.get("location")
-					meetingfor = request.POST.get("meetingfor")
+					meetingfor = request.POST.get("agenda")
 					if meetdate is None or meettime is None or location is None or meetingfor is None:
 						response = "One or more fields missing"
 						data = json.dumps(response)

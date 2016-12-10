@@ -9,16 +9,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var ng2_cookies_1 = require('ng2-cookies/ng2-cookies');
+var router_1 = require('@angular/router');
 var fetchuserdata_service_1 = require('../services/fetchuserdata.service');
 var DashboardComponent = (function () {
-    function DashboardComponent(fetchmeetingsService) {
-        this.fetchmeetingsService = fetchmeetingsService;
+    function DashboardComponent(router, fetchdataservice) {
+        this.router = router;
+        this.fetchdataservice = fetchdataservice;
     }
     DashboardComponent.prototype.ngOnInit = function () {
+        var checklogincookie = ng2_cookies_1.Cookie.get('SignedIn');
+        if (checklogincookie) {
+            this.username = ng2_cookies_1.Cookie.get('username');
+            this.token = ng2_cookies_1.Cookie.get('token');
+            this.fetchMeetings();
+        }
+        else {
+            this.router.navigate(['/signin']);
+        }
+    };
+    DashboardComponent.prototype.fetchMeetings = function () {
         var _this = this;
-        this.meetingsObject = this.fetchmeetingsService.getMeetings()
-            .then(function (data) { return _this.meetingsObject = data; })
+        this.fetchdataservice.getMeetings(this.username, this.token)
+            .then(function (data) { return _this.showmeetingsandsavelastSeq(data); })
             .catch(function (error) { return console.log(error); });
+    };
+    DashboardComponent.prototype.showmeetingsandsavelastSeq = function (requestresponse) {
+        this.meetingsObject = requestresponse.documents;
+        ng2_cookies_1.Cookie.set('last_seq', requestresponse.last_seq);
     };
     DashboardComponent = __decorate([
         core_1.Component({
@@ -26,7 +44,7 @@ var DashboardComponent = (function () {
             templateUrl: 'app/templates/dashboard.html',
             styleUrls: ['app/styles/navbar-static-top.css', 'app/styles/bootstrap.min.css']
         }), 
-        __metadata('design:paramtypes', [fetchuserdata_service_1.FetchmeetingsService])
+        __metadata('design:paramtypes', [router_1.Router, fetchuserdata_service_1.FetchmeetingsService])
     ], DashboardComponent);
     return DashboardComponent;
 }());

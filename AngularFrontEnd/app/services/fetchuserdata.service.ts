@@ -7,21 +7,33 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class FetchmeetingsService {
 
-//	host = "http://localhost:4984/"
-//	db = "meetinggw/"
-//	filter = "_changes?filter=sync_gateway/bychannel&channels="
-
-	private fetchmeetingsurl = 'http://localhost:4984/meetinggw/_changes?filter=sync_gateway/bychannel&channels=bawaji94';
-	//add parameters later
-
+	fetchmeetingsurl = "http://127.0.0.1:8000/meetings/apiviewmeetings";
 	constructor(private http: Http) {}
 
-	getMeetings(): Promise<any> {
+	getMeetings(username: string, token: string): Promise<any> {
+		var body = 'username='+username+'&token='+token;
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/x-www-form-urlencoded');
 		return this.http
-		.get(this.fetchmeetingsurl)
-		.toPromise()
-		.then(response => response.json())
-		.catch(this.handleError);
+			.post(this.fetchmeetingsurl, body, { headers: headers})
+			.toPromise()
+			.then(response => response.json())
+			.catch(this.handleError);
+	}
+
+	addmeetingsurl = "http://127.0.0.1:8000/meetings/apiaddmeet";
+
+	addMeeting(username: string, token: string, meetdate: string, meettime: string, location: string, agenda: string) {
+		var body = 'username='+username+'&token='+token+'&meetdate='+meetdate;
+		body = body+'&meettime='+meettime+'&location='+location+'&agenda='+agenda;
+		var headers = new Headers();
+		headers.append('Content-Type', 'application/x-www-form-urlencoded');
+		return this.http
+			.post(this.addmeetingsurl, body, { headers: headers})
+			.toPromise()
+			.then(response => response.json())
+			.catch(this.handleError);
+		
 	}
 
 	private handleError(error: any): Promise<any> {
