@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
 
 	//write method to check if loggedin onInit
   ngOnInit(): void {
-    let checklogincookie = Cookie.get('SignedIn')
+    let checklogincookie = Cookie.get('SignedIn');
     if(checklogincookie==='true'){
       this.isLoggedIn = (checklogincookie === 'true');
     }
