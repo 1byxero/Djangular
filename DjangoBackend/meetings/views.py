@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from django.core import serializers
 import json, requests, jwt
 from .models import Token
+import time
 
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
@@ -25,7 +26,7 @@ def apisignup(request):
 			data = json.dumps(response)
 		else: 
 			mail = request.POST.get("mail")
-			firstname = request.POST.get("firstname")
+			firstname = request.POST.get("name")
 			lastname = request.POST.get("lastname")
 			try:
 				user = User.objects.create_user(username=username, password=password)
@@ -241,6 +242,60 @@ def apiviewmeetings(request):
 		data = "Invalid request method"
 	return HttpResponse(data, content_type = "application/json")
 
+@csrf_exempt
+def apifetchlatest(request):
+	if request.method=="POST":
+		username = request.POST.get("username")
+		token = request.POST.get("token")
+		sequence = request.POST.get("last_seq")
+		if sequence is not None:
+			host = "http://localhost:4984/"
+			db = "meetinggw/"
+			filter = "_changes?filter=sync_gateway/bychannel&channels="
+			query = str(username)
+			current_last_seq = "&since="+str(sequence)
+			url = host+db+filter+query+current_last_seq
+			response = "will update this to fetch latest docs using sequence number"
+			data = json.dumps(response)
+			r = requests.get(url)
+			#fetchdata
+			if r.status_code == 200:
+				raw_json = r.json()#json.loads(r.text)
+				documents = []
+				docsmetadata = raw_json["results"]
+				requesteddocs = []
+				for i in docsmetadata:
+					if i["id"] != "_user/GUEST":
+						tempid = {"id": i["id"]}
+						requesteddocs.append(tempid)
+
+				#this is inefficient method 
+				
+				for i in docsmetadata:
+					if i["id"] != "_user/GUEST":
+						fetchid = i["id"]
+						fetchhost = "http://localhost:4984/"
+						fetchdb = "meetinggw/"
+						fetchurl = fetchhost+fetchdb+str(fetchid)
+						fetchret =requests.get(fetchurl)
+						if fetchret.status_code == 200:
+							documents.append(fetchret.json())
+				docsdump = json.dumps(documents)
+				next_last_sequence = raw_json["last_seq"] # for sync purpose
+	 			data = json.dumps({
+					"last_seq": next_last_sequence,
+					"documents": documents
+				})
+				time.sleep(3)
+			else:
+				data = json.dumps("Error fetching data")
+		else:
+			data = json.dumps("Invalid request")
+	else:
+		data = json.dumps("Invalid request method")
+	return HttpResponse(data, content_type = "application/json")
+
+
 def viewmeetingsfromcouchbase(request):
 	if request.user.is_authenticated():
 		#make request to get metadata
@@ -352,13 +407,4 @@ def addmeetingtocouchbase(request):
 	else:
 		response = "Signin to create new meeting"
 		data = json.dumps(response)
-	return HttpResponse(data, content_type = "application/json")
-
-def fetchlatest(request):
-	sequence = request.GET.get("last_seq")
-	if sequence is not None:
-		current_last_seq = "&since="+str(sequence)
-		url = host+db+filter+query+current_last_seq
-	response = "will update this to fetch latest docs using sequence number"
-	data = json.dumps(response)
 	return HttpResponse(data, content_type = "application/json")

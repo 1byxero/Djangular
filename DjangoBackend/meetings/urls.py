@@ -9,6 +9,7 @@ urlpatterns = [
 	url(r'^apisignout', views.apisignout, name='apisignout'),
 	url(r'^apiaddmeet', views.apiaddmeet, name='apiaddmeet'),
 	url(r'^apiviewmeetings', views.apiviewmeetings, name='apiviewmeetings'),
+	url(r'^apifetchlatest', views.apifetchlatest, name='apifetchlatest'),
 	url(r'^view', views.viewmeetingsfromcouchbase, name='view'),
 	url(r'^add', views.addmeetingtocouchbase, name='add'),
 ]
